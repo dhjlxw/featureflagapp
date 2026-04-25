@@ -3,4 +3,5 @@ target/
 design.agflowchart5/
 .project
 .settings/
+**/.settings/
 #.gitignore
