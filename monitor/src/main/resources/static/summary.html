@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>项目汇总</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            margin: 20px auto;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        h2 {
+            text-align: center;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align:center">项目汇总</h1>
+
+    <h2>类型汇总</h2>
+    <table id="typeSummary">
+        <thead>
+            <tr>
+                <th>类型</th>
+                <th>数量</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <h2>许可证汇总</h2>
+    <table id="licenseSummary">
+        <thead>
+            <tr>
+                <th>许可证</th>
+                <th>数量</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <h2>月度创建汇总</h2>
+    <table id="monthlySummary">
+        <thead>
+            <tr>
+                <th>年月</th>
+                <th>数量</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+        // Fetch and display type summary
+        fetch('/api/open-source-projects/summary/type')
+            .then(response => response.json())
+            .then(data => {
+                const tbody = document.querySelector('#typeSummary tbody');
+                data.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `<td>${item.type || '无类型'}</td><td>${item.count}</td>`;
+                    tbody.appendChild(row);
+                });
+            });
+
+        // Fetch and display license summary
+        fetch('/api/open-source-projects/summary/license')
+            .then(response => response.json())
+            .then(data => {
+                const tbody = document.querySelector('#licenseSummary tbody');
+                data.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `<td>${item.license || '无许可证'}</td><td>${item.count}</td>`;
+                    tbody.appendChild(row);
+                });
+            });
+
+        // Fetch and display monthly summary
+        fetch('/api/open-source-projects/summary/monthly')
+            .then(response => response.json())
+            .then(data => {
+                const tbody = document.querySelector('#monthlySummary tbody');
+                data.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `<td>${item.month}</td><td>${item.count}</td>`;
+                    tbody.appendChild(row);
+                });
+            });
+    </script>
+</body>
+</html>

@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工作经历管理</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .experience-card {
+            margin-bottom: 20px;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+        }
+        .experience-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .experience-title {
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        .experience-dates {
+            color: #6c757d;
+        }
+        .experience-detail {
+            margin-bottom: 8px;
+        }
+        .detail-label {
+            font-weight: bold;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>工作经历</h2>
+            <div>
+                <div class="btn-group me-2">
+                    <button class="btn btn-outline-secondary language-filter" data-language="中文">中文</button>
+                    <button class="btn btn-outline-secondary language-filter" data-language="ENGLISH">English</button>
+                </div>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addExperienceModal">
+                    <i class="bi bi-plus"></i> 新增工作经历
+                </button>
+            </div>
+        </div>
+
+        <div id="experiencesContainer"></div>
+    </div>
+
+    <!-- Add Experience Modal -->
+    <div class="modal fade" id="addExperienceModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">新增工作经历</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addExperienceForm">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">公司名称</label>
+                                <input type="text" class="form-control" name="companyName" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">职位名称</label>
+                                <input type="text" class="form-control" name="positionName" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">工作地点</label>
+                                <input type="text" class="form-control" name="workLocation" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">开始日期</label>
+                                <input type="date" class="form-control" name="startDate" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">结束日期</label>
+                                <input type="date" class="form-control" name="endDate">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">项目名称</label>
+                            <input type="text" class="form-control" name="projectName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">项目描述</label>
+                            <textarea class="form-control" name="projectDescription" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">个人职责</label>
+                            <textarea class="form-control" name="personalResponsibility" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">主要贡献</label>
+                            <textarea class="form-control" name="mainContribution" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">主要挑战</label>
+                            <textarea class="form-control" name="mainChallenge" rows="3"></textarea>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label">技术栈</label>
+                                <input type="text" class="form-control" name="techStackName">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">服务器类型</label>
+                                <input type="text" class="form-control" name="serverType">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">编程语言</label>
+                                <input type="text" class="form-control" name="programmingLanguage">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">关键词</label>
+                                <input type="text" class="form-control" name="keywords">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">语言</label>
+                                <input type="text" class="form-control" name="language">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">备注</label>
+                            <textarea class="form-control" name="remarks" rows="2"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="saveExperienceBtn">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Experience Modal -->
+    <div class="modal fade" id="editExperienceModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">编辑工作经历</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editExperienceForm">
+                        <input type="hidden" name="id">
+                        <!-- Same fields as add form -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">公司名称</label>
+                                <input type="text" class="form-control" name="companyName" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">职位名称</label>
+                                <input type="text" class="form-control" name="positionName" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">工作地点</label>
+                                <input type="text" class="form-control" name="workLocation" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">开始日期</label>
+                                <input type="date" class="form-control" name="startDate" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">结束日期</label>
+                                <input type="date" class="form-control" name="endDate">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">项目名称</label>
+                            <input type="text" class="form-control" name="projectName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">项目描述</label>
+                            <textarea class="form-control" name="projectDescription" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">个人职责</label>
+                            <textarea class="form-control" name="personalResponsibility" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">主要贡献</label>
+                            <textarea class="form-control" name="mainContribution" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">主要挑战</label>
+                            <textarea class="form-control" name="mainChallenge" rows="3"></textarea>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label">技术栈</label>
+                                <input type="text" class="form-control" name="techStackName">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">服务器类型</label>
+                                <input type="text" class="form-control" name="serverType">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">编程语言</label>
+                                <input type="text" class="form-control" name="programmingLanguage">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">关键词</label>
+                                <input type="text" class="form-control" name="keywords">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">语言</label>
+                                <input type="text" class="form-control" name="language">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">备注</label>
+                            <textarea class="form-control" name="remarks" rows="2"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="updateExperienceBtn">更新</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/axios.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load experiences when page loads
+            loadExperiences();
+
+            // Save new experience
+            document.getElementById('saveExperienceBtn').addEventListener('click', saveExperience);
+
+            // Update existing experience
+            document.getElementById('updateExperienceBtn').addEventListener('click', updateExperience);
+
+            // Language filter buttons
+            document.querySelectorAll('.language-filter').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    currentLanguage = this.getAttribute('data-language');
+                    // Highlight active button
+                    document.querySelectorAll('.language-filter').forEach(b => {
+                        b.classList.toggle('active', b === this);
+                    });
+                    loadExperiences();
+                });
+            });
+        });
+
+        let currentLanguage = null;
+
+        function loadExperiences() {
+            const params = {};
+            if (currentLanguage) {
+                params.language = currentLanguage;
+            }
+            axios.get('/resume-projects', { params })
+                .then(response => {
+                    const experiences = response.data;
+                    displayExperiences(experiences);
+                })
+                .catch(error => {
+                    console.error('Error loading experiences:', error);
+                    alert('加载工作经历失败');
+                });
+        }
+
+        function displayExperiences(experiences) {
+            const container = document.getElementById('experiencesContainer');
+            container.innerHTML = '';
+
+            // Sort by start date descending
+            experiences.sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
+
+            experiences.forEach(exp => {
+                const card = document.createElement('div');
+                card.className = 'experience-card';
+                
+                const header = document.createElement('div');
+                header.className = 'experience-header';
+                
+                const title = document.createElement('div');
+                title.className = 'experience-title';
+                title.textContent = `${exp.companyName} - ${exp.positionName}`;
+                
+                const dates = document.createElement('div');
+                dates.className = 'experience-dates';
+                dates.textContent = `${formatDate(exp.startDate)} - ${exp.endDate ? formatDate(exp.endDate) : '至今'}`;
+                
+                const actions = document.createElement('div');
+                actions.innerHTML = `
+                    <button class="btn btn-sm btn-outline-primary edit-btn me-2" data-id="${exp.id}">编辑</button>
+                    <button class="btn btn-sm btn-outline-danger delete-btn" data-id="${exp.id}">删除</button>
+                `;
+                
+                header.appendChild(title);
+                header.appendChild(dates);
+                header.appendChild(actions);
+                card.appendChild(header);
+                
+                // Add details
+                const details = [
+                    {label: '项目名称', value: exp.projectName},
+                    {label: '工作地点', value: exp.workLocation},
+                    {label: '项目描述', value: exp.projectDescription},
+                    {label: '个人职责', value: exp.personalResponsibility},
+                    {label: '主要贡献', value: exp.mainContribution},
+                    {label: '主要挑战', value: exp.mainChallenge},
+                    {label: '技术栈', value: exp.techStackName},
+                    {label: '服务器类型', value: exp.serverType},
+                    {label: '编程语言', value: exp.programmingLanguage},
+                    {label: '关键词', value: exp.keywords},
+                    {label: '语言', value: exp.language},
+                    {label: '备注', value: exp.remarks}
+                ];
+                
+                details.forEach(detail => {
+                    if (detail.value) {
+                        const detailDiv = document.createElement('div');
+                        detailDiv.className = 'experience-detail';
+                        detailDiv.innerHTML = `<span class="detail-label">${detail.label}:</span>${detail.value}`;
+                        card.appendChild(detailDiv);
+                    }
+                });
+                
+                container.appendChild(card);
+            });
+
+            // Add event listeners to edit buttons
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    loadExperienceForEdit(id);
+                });
+            });
+
+            // Add event listeners to delete buttons
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    if (confirm('确定要删除这条工作经历吗？')) {
+                        deleteExperience(id);
+                    }
+                });
+            });
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        }
+
+        function saveExperience() {
+            const form = document.getElementById('addExperienceForm');
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            axios.post('/resume-projects', data)
+                .then(response => {
+                    if (response.data && response.data.id) {
+                        const addModal = bootstrap.Modal.getInstance(document.getElementById('addExperienceModal'));
+                        addModal.hide();
+                        form.reset();
+                        loadExperiences();
+                        alert('保存成功');
+                    } else {
+                        alert('保存失败: 服务器返回无效数据');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error saving experience:', error);
+                    let errorMsg = '保存工作经历失败';
+                    if (error.response) {
+                        errorMsg += ` (${error.response.status})`;
+                        if (error.response.data) {
+                            errorMsg += ': ' + JSON.stringify(error.response.data);
+                        }
+                    }
+                    alert(errorMsg);
+                });
+        }
+
+        function loadExperienceForEdit(id) {
+            axios.get(`/resume-projects/${id}`)
+                .then(response => {
+                    if (response.data && response.data.id) {
+                        const exp = response.data;
+                        const form = document.getElementById('editExperienceForm');
+                        
+                        // Fill form with experience data
+                        for (const key in exp) {
+                            if (form.elements[key]) {
+                                form.elements[key].value = exp[key] || '';
+                            }
+                        }
+                        
+                        // Convert dates to YYYY-MM-DD format
+                        if (exp.startDate) {
+                            form.elements['startDate'].value = formatDateForInput(exp.startDate);
+                        }
+                        if (exp.endDate) {
+                            form.elements['endDate'].value = formatDateForInput(exp.endDate);
+                        }
+                        
+                        const modal = new bootstrap.Modal(document.getElementById('editExperienceModal'));
+                        modal.show();
+                    } else {
+                        alert('加载失败: 服务器返回无效数据');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading experience:', error);
+                    let errorMsg = '加载工作经历失败';
+                    if (error.response) {
+                        errorMsg += ` (${error.response.status})`;
+                        if (error.response.data) {
+                            errorMsg += ': ' + JSON.stringify(error.response.data);
+                        }
+                    }
+                    alert(errorMsg);
+                });
+        }
+
+        function formatDateForInput(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        }
+
+        function deleteExperience(id) {
+            axios.patch(`/resume-projects/${id}`)
+                .then(response => {
+                    if (response.data && response.data.id) {
+                        alert('删除成功');
+                        loadExperiences();
+                    } else {
+                        alert('删除失败: 服务器返回无效数据');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error deleting experience:', error);
+                    let errorMsg = '删除工作经历失败';
+                    if (error.response) {
+                        errorMsg += ` (${error.response.status})`;
+                        if (error.response.data) {
+                            errorMsg += ': ' + JSON.stringify(error.response.data);
+                        }
+                    }
+                    alert(errorMsg);
+                });
+        }
+
+        function updateExperience() {
+            const form = document.getElementById('editExperienceForm');
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+            const id = data.id;
+
+            axios.put(`/resume-projects/${id}`, data)
+                .then(response => {
+                    if (response.data && response.data.id) {
+                        const editModal = bootstrap.Modal.getInstance(document.getElementById('editExperienceModal'));
+                        editModal.hide();
+                        loadExperiences();
+                        alert('更新成功');
+                    } else {
+                        alert('更新失败: 服务器返回无效数据');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error updating experience:', error);
+                    let errorMsg = '更新工作经历失败';
+                    if (error.response) {
+                        errorMsg += ` (${error.response.status})`;
+                        if (error.response.data) {
+                            errorMsg += ': ' + JSON.stringify(error.response.data);
+                        }
+                    }
+                    alert(errorMsg);
+                });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- 父项目坐标 -->
+    <groupId>com.ding.feature</groupId>
+    <artifactId>parent-root</artifactId>
+    <version>1.0.0</version>
+    <!-- 必须是 pom -->
+    <packaging>pom</packaging>
+
+    <!-- 列出所有子项目文件夹名 -->
+    <modules>
+        <module>api</module>
+        <module>cache</module>
+        <module>admin</module>
+ 		<module>sdk</module>
+    </modules>
+
+    <!-- 可选：统一管理SpringBoot版本、依赖版本 -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.7.15</version>
+        <relativePath/>
+    </parent>
+</project>

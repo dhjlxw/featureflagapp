@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Word Roots</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .root-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .root-item {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+            cursor: pointer;
+            position: relative;
+        }
+        .root-details {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            border: 1px solid #ccc;
+            padding: 10px;
+            z-index: 100;
+            width: 200px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .root-item:hover .root-details {
+            display: block;
+        }
+        .details-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .details-table td {
+            padding: 5px;
+            border: 1px solid #eee;
+            text-align: left;
+        }
+        .details-table td:first-child {
+            font-weight: bold;
+            width: 60px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Word Roots</h1>
+    <div id="rootContainer" class="root-grid"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/api/wordroots/specs')
+                .then(response => response.json())
+                .then(data => {
+                    const container = document.getElementById('rootContainer');
+                    data.forEach(root => {
+                        const rootItem = document.createElement('div');
+                        rootItem.className = 'root-item';
+                        rootItem.innerHTML = `
+                            ${root.root}
+                            <div class="root-details">
+                                <table class="details-table">
+                                    <tr><td>词根</td><td>${root.root}</td></tr>
+                                    <tr><td>意思</td><td>${root.meaning}</td></tr>
+                                    <tr><td>来源</td><td>${root.source || '-'}</td></tr>
+                                    <tr><td>解释</td><td>${root.note || '-'}</td></tr>
+                                </table>
+                            </div>
+                        `;
+                        rootItem.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            window.open(`word_root_refer.html?root=${encodeURIComponent(root.root)}`, '_blank');
+                        });
+                        container.appendChild(rootItem);
+                    });
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>

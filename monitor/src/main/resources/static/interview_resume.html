@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Resume Matching</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .text-area-container {
+            margin-bottom: 20px;
+        }
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .btn-container {
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <h1 class="mb-4">Interview Resume Matching</h1>
+        
+        <div class="btn-container">
+            <button id="loadBtn" class="btn btn-primary">
+                <i class="bi bi-download"></i> Load Interview Data
+            </button>
+        </div>
+
+        <div class="text-area-container">
+            <label class="form-label">Interview Requirements</label>
+            <textarea id="interview" placeholder="Enter interview requirements here..."></textarea>
+        </div>
+
+        <div class="text-area-container">
+            <label class="form-label">Resume Content</label>
+            <textarea id="resume" placeholder="Enter resume content here..."></textarea>
+        </div>
+
+        <div class="btn-container">
+            <button id="loadChineseResumeBtn" class="btn btn-primary me-2">
+                <i class="bi bi-download"></i> Load Chinese Resume
+            </button>
+            <button id="loadEnglishResumeBtn" class="btn btn-primary me-2">
+                <i class="bi bi-download"></i> Load English Resume
+            </button>
+            <button id="matchBtn" class="btn btn-success">
+                <i class="bi bi-check-circle"></i> Match
+            </button>
+        </div>
+
+        <div class="text-area-container">
+            <label class="form-label">Matching Result</label>
+            <textarea id="result" readonly placeholder="Matching results will appear here..."></textarea>
+        </div>
+    </div>
+
+    <script src="/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/axios.min.js"></script>
+    <script>
+        // Get ID from URL parameter and load interview data
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get('id');
+
+        async function loadInterviewData() {
+            if (!id) {
+                alert('No ID parameter found in URL');
+                return;
+            }
+
+            try {
+                const response = await axios.get(`/api/interview-records/${id}`);
+                const record = response.data;
+                
+                // Format the data as "Title: Content" pairs
+                let formattedText = '';
+                formattedText += `Company Name: ${record.companyName || 'N/A'}\n\n`;
+                formattedText += `Position Title: ${record.positionTitle || 'N/A'}\n\n`;
+                formattedText += `Position Requirements: ${record.positionRequirements || 'N/A'}\n\n`;
+                formattedText += `Interview Details: ${record.interviewDetail || 'N/A'}\n\n`;
+                formattedText += `Company Intro: ${record.companyIntro || 'N/A'}\n\n`;
+                
+                document.getElementById('interview').value = formattedText;
+            } catch (error) {
+                console.error('Error loading interview data:', error);
+                alert('Failed to load interview data');
+            }
+        }
+
+        // Load interview data and Chinese resume on page load if ID exists
+        if (id) {
+            loadInterviewData();
+            setTimeout(() => {
+                 document.getElementById('loadChineseResumeBtn').click();
+            }, 1000);
+           
+        }
+
+        // Manual load button
+        document.getElementById('loadBtn').addEventListener('click', loadInterviewData);
+
+        // Load resume projects
+        document.getElementById('loadChineseResumeBtn').addEventListener('click', async () => {
+            try {
+                const response = await axios.get('/resume-projects?language=中文');
+                const projects = response.data;
+                
+                let formattedText = '';
+                projects.forEach(project => {
+                    formattedText += `Company Name: ${project.companyName || 'N/A'}\n`;
+                    formattedText += `Position Name: ${project.positionName || 'N/A'}\n`;
+                    formattedText += `Work Location: ${project.workLocation || 'N/A'}\n`;
+                    formattedText += `Start Date: ${project.startDate || 'N/A'}\n`;
+                    formattedText += `End Date: ${project.endDate || 'N/A'}\n`;
+                    formattedText += `Project Name: ${project.projectName || 'N/A'}\n`;
+                    formattedText += `Project Description: ${project.projectDescription || 'N/A'}\n`;
+                    formattedText += `Personal Responsibility: ${project.personalResponsibility || 'N/A'}\n`;
+                    formattedText += `Main Contribution: ${project.mainContribution || 'N/A'}\n`;
+                    formattedText += `Main Challenge: ${project.mainChallenge || 'N/A'}\n`;
+                    formattedText += `Tech Stack: ${project.techStackName || 'N/A'}\n`;
+                    formattedText += `Server Type: ${project.serverType || 'N/A'}\n`;
+                    formattedText += `Programming Language: ${project.programmingLanguage || 'N/A'}\n`;    
+                });
+                
+                document.getElementById('resume').value = formattedText;
+            } catch (error) {
+                console.error('Error loading resume projects:', error);
+                alert('Failed to load resume projects');
+            }
+        });
+    document.getElementById('loadEnglishResumeBtn').addEventListener('click', async () => {
+            try {
+                const response = await axios.get('/resume-projects?language=ENGLISH');
+                const projects = response.data;
+                
+                let formattedText = '';
+                projects.forEach(project => {
+                    formattedText += `Company Name: ${project.companyName || 'N/A'}\n`;
+                    formattedText += `Position Name: ${project.positionName || 'N/A'}\n`;
+                    formattedText += `Work Location: ${project.workLocation || 'N/A'}\n`;
+                    formattedText += `Start Date: ${project.startDate || 'N/A'}\n`;
+                    formattedText += `End Date: ${project.endDate || 'N/A'}\n`;
+                    formattedText += `Project Name: ${project.projectName || 'N/A'}\n`;
+                    formattedText += `Project Description: ${project.projectDescription || 'N/A'}\n`;
+                    formattedText += `Personal Responsibility: ${project.personalResponsibility || 'N/A'}\n`;
+                    formattedText += `Main Contribution: ${project.mainContribution || 'N/A'}\n`;
+                    formattedText += `Main Challenge: ${project.mainChallenge || 'N/A'}\n`;
+                    formattedText += `Tech Stack: ${project.techStackName || 'N/A'}\n`;
+                    formattedText += `Server Type: ${project.serverType || 'N/A'}\n`;
+                    formattedText += `Programming Language: ${project.programmingLanguage || 'N/A'}\n`;    
+                });
+                
+                document.getElementById('resume').value = formattedText;
+            } catch (error) {
+                console.error('Error loading resume projects:', error);
+                alert('Failed to load resume projects');
+            }
+        });
+        // Match resume with interview
+        document.getElementById('matchBtn').addEventListener('click', async () => {
+            const interview = document.getElementById('interview').value;
+            const resume = document.getElementById('resume').value;
+
+            if (!interview || !resume) {
+                alert('Please fill in both interview and resume fields');
+                return;
+            }
+
+            try {
+                const response = await axios.post('/api/interview-resume/match', {
+                    interview: interview,
+                    resume: resume
+                });
+                document.getElementById('result').value = response.data.result;
+            } catch (error) {
+                console.error('Error matching resume:', error);
+                alert('Failed to perform matching');
+            }
+        });
+    </script>
+</body>
+</html>
