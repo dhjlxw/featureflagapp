@@ -1,5 +1,7 @@
 package com.ding.feature.admin.controller;
 
+import java.util.List;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -8,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ding.feature.beans.FeatureBean;
-import com.ding.feature.beans.FeatureFlagBean;
 import com.ding.feature.beans.PaginatedBean;
 import com.ding.feature.beans.ResultBean;
 
@@ -32,7 +33,7 @@ public class FeatureDataController {
 		return null;
 
 	}
-	
+
 	@DeleteMapping("/delete/{id}")
 	public ResultBean<Integer> delete(@PathVariable("id") long id) {
 		return null;
@@ -44,7 +45,25 @@ public class FeatureDataController {
 			@RequestParam("includeDeleted") boolean includeDeleted, @RequestBody FeatureBean bean) {
 		return null;
 	}
-	
-	
-	// TODO batch methods, ignored now
+
+	@GetMapping("/get/batch")
+	public ResultBean<List<FeatureBean>> getBatch(@RequestParam("ids") List<Long> ids) {
+		return null;
+	}
+
+	@PostMapping("/insert/batch")
+	public ResultBean<Integer> insertBatch(@RequestBody List<FeatureBean> beans) {
+		return null;
+	}
+
+	@PostMapping("/update/batch")
+	public ResultBean<Integer> updateBatch(@RequestBody List<FeatureBean> beans) {
+		return null;
+	}
+
+	@DeleteMapping("/delete/batch")
+	public ResultBean<Integer> deleteBatch(@RequestParam("ids") List<Long> ids) {
+		return null;
+	}
+
 }
