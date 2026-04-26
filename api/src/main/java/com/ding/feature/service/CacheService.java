@@ -7,6 +7,7 @@ import com.ding.feature.beans.FeatureFlagBean;
 
 /*
  * to operate redis
+ * the bean should only contain the minimum fields
  */
 public interface CacheService {
 

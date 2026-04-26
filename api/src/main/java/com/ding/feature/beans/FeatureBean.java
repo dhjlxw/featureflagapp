@@ -22,5 +22,4 @@ public class FeatureBean {
 	private String updatedBy;
 	private long createdTime;// ms
 	private long updatedTime;// ms
-	private boolean matched;// only used for explain purpose
 }
